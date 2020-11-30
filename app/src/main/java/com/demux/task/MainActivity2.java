@@ -73,11 +73,41 @@ public class MainActivity2 extends AppCompatActivity implements updateTag, filte
                     }
                 });
         SimpleCircleButton.Builder builder1 = new SimpleCircleButton.Builder()
-                .normalImageRes(R.drawable.company);
+                .normalImageRes(R.drawable.company)
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        Fragment fragment1 = new DifficultyChoices(selections, MainActivity2.this);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.sheet_fragment, fragment1);
+                        ft.commit();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                });
         SimpleCircleButton.Builder builder2 = new SimpleCircleButton.Builder()
-                .normalImageRes(R.drawable.topic);
+                .normalImageRes(R.drawable.topic)
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        Fragment fragment1 = new DifficultyChoices(selections, MainActivity2.this);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.sheet_fragment, fragment1);
+                        ft.commit();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                });
         SimpleCircleButton.Builder builder3 = new SimpleCircleButton.Builder()
-                .normalImageRes(R.drawable.type);
+                .normalImageRes(R.drawable.type)
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        Fragment fragment1 = new DifficultyChoices(selections, MainActivity2.this);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.sheet_fragment, fragment1);
+                        ft.commit();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                });
         boomMenuButton.addBuilder(builder);
         boomMenuButton.addBuilder(builder1);
         boomMenuButton.addBuilder(builder2);
