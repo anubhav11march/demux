@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomButtons.TextInsideCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -21,13 +22,14 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity2 extends AppCompatActivity {
+public class MainActivity2 extends AppCompatActivity implements updateTag{
 
     Fragment fragment;
-    ArrayList<Question> questions;
-    LinearLayout fabFilter;
+    ArrayList<Question> questions, allQuestions;
+    LinearLayout fabFilter, sheetFragment;
     BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
     BoomMenuButton boomMenuButton;
+    ArrayList<String> selections = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +38,12 @@ public class MainActivity2 extends AppCompatActivity {
         getSupportActionBar().hide();
 
         questions = new ArrayList<>();
+        allQuestions = new ArrayList<>();
         populateList(questions);
-
-        viewDefaultFragment();
+        allQuestions = new ArrayList<>(questions);
+        viewDefaultFragment(questions);
         fabFilter = findViewById(R.id.fab_filter);
+        sheetFragment = findViewById(R.id.sheet_fragment);
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -57,7 +61,17 @@ public class MainActivity2 extends AppCompatActivity {
 
         boomMenuButton = findViewById(R.id.boom);
         SimpleCircleButton.Builder builder = new SimpleCircleButton.Builder()
-                .normalImageRes(R.drawable.diff);
+                .normalImageRes(R.drawable.diff)
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        Fragment fragment1 = new DifficultyChoices(selections, MainActivity2.this);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.sheet_fragment, fragment1);
+                        ft.commit();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                });
         SimpleCircleButton.Builder builder1 = new SimpleCircleButton.Builder()
                 .normalImageRes(R.drawable.company);
         SimpleCircleButton.Builder builder2 = new SimpleCircleButton.Builder()
@@ -75,11 +89,29 @@ public class MainActivity2 extends AppCompatActivity {
         });
     }
 
-    void viewDefaultFragment(){
-        fragment = new QuestionsFragment(questions, new ArrayList<>(), this);
+    void viewDefaultFragment(ArrayList<Question> qq){
+        fragment = new QuestionsFragment(qq, new ArrayList<>(), this);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_layout, fragment);
         ft.commit();
+    }
+
+    void startFiltering(){
+        for(int i=0; i<questions.size(); i++){
+            int f=0;
+            for(int j=0; j<questions.get(i).tags.size(); j++){
+                if(selections.contains(new String(questions.get(i).tags.get(j).getText()))){
+                    f=1;
+                    break;
+                }
+            }
+            if(f==0) {
+                questions.remove(i);
+                i--;
+            }
+        }
+        viewDefaultFragment(questions);
+        questions = new ArrayList<>(allQuestions);
     }
 
 
@@ -319,5 +351,19 @@ public class MainActivity2 extends AppCompatActivity {
                 )
         );
 
+    }
+
+    @Override
+    public void modifyFilter(ArrayList<String> tags, ArrayList<String> removals) {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        for(int i=0; i<tags.size(); i++){
+            if(!selections.contains(tags.get(i)))
+                selections.add(tags.get(i));
+        }
+        for(int i=0; i<removals.size(); i++)
+            if(selections.contains(removals.get(i)))
+                selections.remove(removals.get(i));
+
+        startFiltering();
     }
 }
