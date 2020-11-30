@@ -12,12 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.QuestionsViewHolder> {
 
     ArrayList<Question> questions;
     RecyclerView rv;
     Context context;
+    private boolean isLoadingAdded = false;
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
 
     RecyclerViewAdapter(ArrayList<Question> questions, ArrayList<String> filters, Context context){
         this.questions = questions;
@@ -147,6 +151,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tagBg.setBackground(context.getDrawable(R.drawable.type_button));
         }
     }
+
+
+
 }
 
 

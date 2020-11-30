@@ -22,7 +22,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity2 extends AppCompatActivity implements updateTag{
+public class MainActivity2 extends AppCompatActivity implements updateTag, filter{
 
     Fragment fragment;
     ArrayList<Question> questions, allQuestions;
@@ -97,7 +97,7 @@ public class MainActivity2 extends AppCompatActivity implements updateTag{
     }
 
     void startFiltering(){
-        for(int i=0; i<questions.size(); i++){
+        for(int i=0; i<questions.size() && selections.size()>0; i++){
             int f=0;
             for(int j=0; j<questions.get(i).tags.size(); j++){
                 if(selections.contains(new String(questions.get(i).tags.get(j).getText()))){
@@ -351,6 +351,8 @@ public class MainActivity2 extends AppCompatActivity implements updateTag{
                 )
         );
 
+
+
     }
 
     @Override
@@ -364,6 +366,11 @@ public class MainActivity2 extends AppCompatActivity implements updateTag{
             if(selections.contains(removals.get(i)))
                 selections.remove(removals.get(i));
 
+        startFiltering();
+    }
+
+    @Override
+    public void filter() {
         startFiltering();
     }
 }
